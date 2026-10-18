@@ -87,8 +87,8 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:16px 0 24px}
 <main id="app">
 
 <section class="step on" data-step="start">
-  <h1>Английский через лёгкие книги</h1>
-  <p class="lead">Читаете настоящую книгу на английском. Не знаете слово — нажали и сразу видите перевод и слышите произношение. 10 минут в день.</p>
+  <h1 id="h1">Английский через лёгкие книги</h1>
+  <p class="lead" id="lead">Читаете настоящую книгу на английском. Не знаете слово — нажали и сразу видите перевод и слышите произношение. 10 минут в день.</p>
   <div class="book">
     <span class="pop">rabbits — кролики</span>
     <div class="cap">The Tale of Peter Rabbit</div>
@@ -220,6 +220,17 @@ let saved = {};
 try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
 function persist(patch) { Object.assign(saved, patch, { t: Date.now() }); try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} }
 const answers = Object.assign({}, saved.answers || {});
+// Проверка заголовков (идея Пристли: сравнить, какой заголовок даёт больше записей). Вариант закрепляется за посетителем
+// и уходит вместе с записью в Дени как «headline: A/B/C».
+const HEADLINES = {
+  A: ['Английский через лёгкие книги', 'Читаете настоящую книгу на английском. Не знаете слово — нажали и сразу видите перевод и слышите произношение. 10 минут в день.'],
+  B: ['Читайте на английском с первого дня', 'Без зубрёжки и скучных учебников: лёгкая книга, перевод любого слова одним нажатием и произношение. 10 минут в день.'],
+  C: ['10 минут в день — и вы читаете книги в оригинале', 'Начинаем с самых лёгких историй и шаг за шагом доходим до «Волшебника страны Оз». Перевод и произношение — одним нажатием.'],
+};
+if (!HEADLINES[saved.headline]) persist({ headline: 'ABC'[Math.floor(Math.random() * 3)] });
+answers.headline = saved.headline;
+document.getElementById('h1').textContent = HEADLINES[saved.headline][0];
+document.getElementById('lead').textContent = HEADLINES[saved.headline][1];
 let cur = 0;
 const prog = document.getElementById('prog'), bar = document.getElementById('bar');
 const qCount = steps.filter(s => s.dataset.step === 'q').length;
