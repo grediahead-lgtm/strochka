@@ -278,11 +278,20 @@ const PAGE = [
     'Но Питер, который был очень непослушным, побежал прямиком в огород мистера Мак-Грегора и протиснулся под калиткой!'],
 ];
 let voice = null;
-function pickVoice() { const vs = speechSynthesis.getVoices(); voice = vs.find(v => /^en-(US|GB)/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null; }
+// Лучший доступный английский голос. Имена голосов система отдаёт на своём языке («Саманта»), поэтому списки двуязычные.
+// Сначала «естественные» (Edge Natural/Online, Google), потом качественные системные; шуточные голоса macOS исключены.
+const GOOD = [/natural|online/i, /google/i, /samantha|саманта/i, /\bava\b|\bава\b|ейва/i, /allison|еліссон|эллисон/i, /aria|jenny|guy|emma|serena|susan/i,
+  /daniel|даниэль|даніель/i, /karen|карен/i, /moira|мойра/i, /tessa|тесса/i];
+const FUNNY = /eddy|flo\b|grandma|grandpa|reed|rocko|sandy|shelley|albert|альберт|bahh|бахх|bells|дзвони|колокол|boing|пружин|bubbles|бульбаш|пузыр|cellos|віолонч|виолонч|wobble|вібрат|вибрат|zarvox|зарвокс|organ|орган|news|новин|новост|jester|блазень|шут|superstar|суперзір|суперзвезд|trinoid|триноїд|триноид|whisper|шепіт|шепот|fred|фред|junior|підліт|подрост|ralph|ральф|kathy|кеті|кэти|hysterical|істерич|истерич/i;
+function pickVoice() {
+  const vs = speechSynthesis.getVoices().filter(v => /^en(-|_|$)/i.test(v.lang) && !FUNNY.test(v.name));
+  const score = v => { const i = GOOD.findIndex(r => r.test(v.name)); return (i < 0 ? 50 : i) + (/^en-us/i.test(v.lang) ? 0 : 0.5); };
+  voice = vs.sort((a, b) => score(a) - score(b))[0] || null;
+}
 if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 function say(text) {
   if (!('speechSynthesis' in window)) return;
-  const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; if (voice) u.voice = voice; u.rate = .85;
+  const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; if (voice) u.voice = voice; u.rate = .88; u.pitch = 1.05;
   speechSynthesis.cancel(); speechSynthesis.speak(u);
 }
 let tipT;
