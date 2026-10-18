@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Строчка — английский через лёгкие книги</title>
+<meta name="description" content="Учите английский, читая лёгкие книги: нажали на слово — увидели перевод и услышали произношение. 10 минут в день. Запишитесь в ранний доступ.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Manrope:wght@500;700;800&family=Lora:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2433;--muted:#667085;--bg:#fbf7f0;--card:#fff;--line:#ebe4d8;--green:#1f7a5c;--green2:#2fa37c;--sun:#ffcf5c;--coral:#f2705e;--paper:#fffdf8}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:500 17px/1.5 Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:0 18px}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+.logo{font:800 22px Unbounded,sans-serif;color:var(--green)}
+.logo span{color:var(--coral)}
+.badge{font-size:13px;font-weight:800;color:var(--green);background:#e6f4ee;border-radius:99px;padding:5px 11px}
+.progress{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:4px 0 18px}
+.progress b{display:block;height:100%;width:0;background:var(--green2);border-radius:99px;transition:width .35s}
+main{flex:1;display:flex;flex-direction:column}
+.step{display:none;flex:1;flex-direction:column;animation:in .35s ease}
+.step.on{display:flex}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h1{font:800 31px/1.15 Unbounded,sans-serif;color:var(--green);text-wrap:balance}
+h2{font:800 24px/1.22 Unbounded,sans-serif;color:var(--green);text-wrap:balance;margin-bottom:8px}
+.lead{color:var(--muted);margin-top:12px;font-size:18px}
+.book{margin:22px 0;background:var(--paper);border:2px solid var(--line);border-radius:22px;padding:20px 20px 18px;box-shadow:0 14px 30px -18px #6b4f2a55;position:relative}
+.book .cap{font:800 12px Manrope;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.book p{font:500 19px/1.75 Lora,Georgia,serif;margin-top:8px}
+.book .w{border-bottom:2px dotted var(--green2);cursor:pointer}
+.book .pop{position:absolute;left:20px;top:-18px;background:var(--ink);color:#fff;font:700 14px Manrope;border-radius:10px;padding:6px 10px}
+.points{display:grid;gap:10px;margin:6px 0 22px}
+.points div{display:flex;gap:10px;align-items:flex-start}
+.points b{flex:none;width:28px;height:28px;border-radius:50%;background:var(--sun);display:grid;place-items:center;font-size:14px}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px 16px;font:700 17px Manrope,sans-serif;color:var(--ink);cursor:pointer;transition:border-color .15s,transform .1s}
+.opt:active{transform:scale(.99)}
+.opt .e{font-size:22px}
+.opt.sel{border-color:var(--green2);background:#eef8f3}
+.hint{color:var(--muted);font-size:15px;margin-top:4px}
+.btn{display:block;width:100%;margin:18px 0 22px;padding:17px;border:0;border-radius:16px;background:var(--green);color:#fff;font:800 18px Manrope,sans-serif;cursor:pointer}
+.btn.y{background:var(--sun);color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.spacer{flex:1}
+.loader{margin:40px auto 20px;width:72px;height:72px;border-radius:50%;border:7px solid var(--line);border-top-color:var(--green2);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.checks{list-style:none;padding:0;display:grid;gap:8px;margin-top:10px}
+.checks li{opacity:.25;transition:opacity .4s}.checks li.ok{opacity:1}
+.plan{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:18px;margin-top:14px;display:grid;gap:12px}
+.plan .row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding-bottom:10px}
+.plan .row:last-child{border:0;padding:0}
+.plan .k{color:var(--muted)}.plan .v{font-weight:800;text-align:right}
+.reader{background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:18px;margin-top:12px;display:grid;gap:16px}
+.reader .title{font:600 14px Manrope;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.para{display:grid;gap:6px}
+.en{font:500 20px/1.8 Lora,Georgia,serif}
+.w{border-bottom:2px dotted var(--green2);cursor:pointer;padding:0 1px;border-radius:4px}
+.w.act{background:var(--sun)}
+.ru{color:var(--muted);font-size:15px;display:none}
+.para.show .ru{display:block}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:0;background:#eef8f3;color:var(--green);border-radius:10px;padding:5px 11px;font:700 14px Manrope,sans-serif;cursor:pointer}
+.saved{font-size:15px;color:var(--muted);margin-top:4px}
+.saved b{color:var(--green)}
+.tip{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:700;max-width:90vw;opacity:0;pointer-events:none;transition:opacity .2s;text-align:center}
+.tip.on{opacity:1}
+label{display:block;font-weight:700;margin:14px 0 6px}
+input[type=text]{width:100%;padding:15px;border-radius:14px;border:2px solid var(--line);font:600 17px Manrope,sans-serif;background:#fff;color:var(--ink)}
+input:focus{outline:none;border-color:var(--green2)}
+.consent{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:15px;color:var(--muted)}
+.consent input{width:22px;height:22px;flex:none;margin-top:2px}
+a{color:var(--green)}
+.err{color:var(--coral);font-weight:700;margin-top:8px;min-height:1.4em}
+.big{font-size:56px;text-align:center;margin:30px 0 6px}
+footer{color:var(--muted);font-size:13px;text-align:center;padding:16px 0 24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="logo">Строчка<span>.</span></div><div class="badge">ранний доступ</div></header>
+<div class="progress" id="prog" hidden><b id="bar"></b></div>
+<main id="app">
+
+<section class="step on" data-step="start">
+  <h1>Английский через лёгкие книги</h1>
+  <p class="lead">Читаете настоящую книгу на английском. Не знаете слово — нажали и сразу видите перевод и слышите произношение. 10 минут в день.</p>
+  <div class="book">
+    <span class="pop">rabbits — кролики</span>
+    <div class="cap">The Tale of Peter Rabbit</div>
+    <p>Once upon a time there were four little <span class="w">Rabbits</span>, and their names were Flopsy, Mopsy, Cotton-tail, and Peter.</p>
+  </div>
+  <div class="points">
+    <div><b>1</b><span>Пройдите тест за 1 минуту</span></div>
+    <div><b>2</b><span>Получите план и прочитайте первую страницу</span></div>
+    <div><b>3</b><span>Запишитесь в ранний доступ бесплатно</span></div>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn" data-next>Начать тест</button>
+</section>
+
+<section class="step" data-step="q" data-key="goal" data-multi="1" data-title="Зачем вам английский?">
+  <p class="hint">Можно выбрать несколько</p>
+  <div class="opts">
+    <button class="opt" data-v="work"><span class="e">💼</span>Работа и карьера</button>
+    <button class="opt" data-v="travel"><span class="e">✈️</span>Путешествия</button>
+    <button class="opt" data-v="movies"><span class="e">🎬</span>Фильмы и сериалы без перевода</button>
+    <button class="opt" data-v="move"><span class="e">🌍</span>Переезд в другую страну</button>
+    <button class="opt" data-v="kids"><span class="e">🎒</span>Помогать детям с учёбой</button>
+    <button class="opt" data-v="self"><span class="e">🧠</span>Для себя, для развития</button>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn" data-next disabled>Далее</button>
+</section>
+
+<section class="step" data-step="q" data-key="level" data-title="Какой у вас сейчас уровень?">
+  <div class="opts">
+    <button class="opt" data-v="A0"><span class="e">🌱</span>Почти ноль, знаю алфавит</button>
+    <button class="opt" data-v="A1"><span class="e">🔤</span>Знаю простые слова и фразы</button>
+    <button class="opt" data-v="A2"><span class="e">📗</span>Читаю простые тексты со словарём</button>
+    <button class="opt" data-v="B1"><span class="e">📘</span>Понимаю почти всё в несложном тексте</button>
+  </div>
+</section>
+
+<section class="step" data-step="q" data-key="minutes" data-title="Сколько времени в день готовы читать?">
+  <div class="opts">
+    <button class="opt" data-v="5"><span class="e">☕</span>5 минут</button>
+    <button class="opt" data-v="10"><span class="e">🚌</span>10 минут</button>
+    <button class="opt" data-v="15"><span class="e">📚</span>15 минут</button>
+    <button class="opt" data-v="20"><span class="e">🔥</span>20 минут и больше</button>
+  </div>
+</section>
+
+<section class="step" data-step="q" data-key="hard" data-title="Что мешает больше всего?">
+  <div class="opts">
+    <button class="opt" data-v="words"><span class="e">🧠</span>Слова не запоминаются</button>
+    <button class="opt" data-v="boring"><span class="e">😴</span>Учебники скучные, бросаю</button>
+    <button class="opt" data-v="time"><span class="e">⏳</span>Нет времени на курсы</button>
+    <button class="opt" data-v="speak"><span class="e">😶</span>Понимаю, но не могу сказать</button>
+  </div>
+</section>
+
+<section class="step" data-step="q" data-key="genre" data-title="Что вам интереснее читать?">
+  <div class="opts">
+    <button class="opt" data-v="tales"><span class="e">🐰</span>Сказки и добрые истории</button>
+    <button class="opt" data-v="fables"><span class="e">🦊</span>Короткие басни с моралью</button>
+    <button class="opt" data-v="adventure"><span class="e">🗺️</span>Приключения</button>
+    <button class="opt" data-v="classic"><span class="e">🎩</span>Известная классика</button>
+  </div>
+</section>
+
+<section class="step" data-step="load">
+  <h2>Подбираем книги и составляем план…</h2>
+  <div class="loader"></div>
+  <ul class="checks">
+    <li>✅ Учитываем ваш уровень</li>
+    <li>✅ Подбираем книги по интересам</li>
+    <li>✅ Делим чтение на короткие уроки</li>
+  </ul>
+</section>
+
+<section class="step" data-step="plan">
+  <h2>Ваш план готов</h2>
+  <p class="hint">Ориентировочный план: зависит от того, сколько вы читаете.</p>
+  <div class="plan" id="planBox"></div>
+  <p class="lead" style="font-size:16px">Прочитайте первую страницу прямо сейчас: нажмите на любое слово.</p>
+  <div class="spacer"></div>
+  <button class="btn" data-next>Читать первую страницу</button>
+</section>
+
+<section class="step" data-step="lesson">
+  <h2>Первая страница</h2>
+  <p class="hint">Нажмите на слово — перевод и произношение. «Перевод абзаца» — если хочется проверить себя.</p>
+  <div class="reader" id="reader"></div>
+  <div class="saved" id="saved"></div>
+  <div class="spacer"></div>
+  <button class="btn y" data-next>Хочу читать так каждый день</button>
+</section>
+
+<section class="step" data-step="form">
+  <h2>Запишитесь в ранний доступ</h2>
+  <p class="hint">Бесплатно. Напишем, как только откроем первые книги. Без спама.</p>
+  <label for="name">Как к вам обращаться (необязательно)</label>
+  <input id="name" type="text" autocomplete="given-name" maxlength="60">
+  <label for="contact">E-mail или Telegram (@ник)</label>
+  <input id="contact" type="text" inputmode="email" autocomplete="email" maxlength="120" placeholder="you@gmail.com или @nickname">
+  <div class="consent"><input id="agree" type="checkbox"><span>Согласен получить сообщение о запуске «Строчки». Ознакомлен с <a href="privacy.html" target="_blank">политикой конфиденциальности</a>.</span></div>
+  <div class="err" id="err"></div>
+  <div class="spacer"></div>
+  <button class="btn" id="send">Записаться</button>
+</section>
+
+<section class="step" data-step="done">
+  <div class="big">🎉</div>
+  <h2 style="text-align:center">Вы в списке!</h2>
+  <p class="lead" style="text-align:center">Напишем, когда откроем первые книги. Знаете кого-то, кто тоже хочет английский? Поделитесь ссылкой — чем нас больше, тем быстрее запуск.</p>
+  <div class="spacer"></div>
+  <button class="btn y" id="share">Поделиться</button>
+</section>
+
+</main>
+<footer>Строчка · ранний доступ · <a href="privacy.html" target="_blank">Конфиденциальность</a></footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+// «Строчка»: квиз → план → чтение с переводом по нажатию → запись в ранний доступ (18.10.2026).
+// Текст: Beatrix Potter, «The Tale of Peter Rabbit» (1902), общественное достояние (Project Gutenberg #14838).
+// ENDPOINT: сценарий n8n на Railway «Строчка: ранний доступ → Дени» (StrochkaSignup01).
+const ENDPOINT = 'https://n8n-production-bfdf.up.railway.app/webhook/strochka-signup';
+const steps = [...document.querySelectorAll('.step')];
+const answers = {};
+let cur = 0;
+const prog = document.getElementById('prog'), bar = document.getElementById('bar');
+const qCount = steps.filter(s => s.dataset.step === 'q').length;
+steps.forEach(s => { if (s.dataset.title) s.insertAdjacentHTML('afterbegin', '<h2>' + s.dataset.title + '</h2>'); });
+
+function show(i) {
+  steps[cur].classList.remove('on'); cur = i; steps[cur].classList.add('on');
+  const s = steps[cur];
+  const qi = steps.slice(0, cur + 1).filter(x => x.dataset.step === 'q').length;
+  prog.hidden = s.dataset.step === 'start' || s.dataset.step === 'done';
+  bar.style.width = Math.min(100, (s.dataset.step === 'q' ? qi / (qCount + 2) : cur / (steps.length - 1)) * 100) + '%';
+  window.scrollTo(0, 0);
+  if (s.dataset.step === 'load') runLoader();
+  if (s.dataset.step === 'plan') buildPlan();
+  if (s.dataset.step === 'lesson') buildReader();
+}
+document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => show(cur + 1)));
+document.querySelectorAll('.step[data-step=q]').forEach(s => {
+  const multi = s.dataset.multi === '1', key = s.dataset.key;
+  s.querySelectorAll('.opt').forEach(o => o.addEventListener('click', () => {
+    if (multi) {
+      o.classList.toggle('sel');
+      answers[key] = [...s.querySelectorAll('.opt.sel')].map(x => x.dataset.v);
+      s.querySelector('[data-next]').disabled = !answers[key].length;
+    } else {
+      s.querySelectorAll('.opt').forEach(x => x.classList.remove('sel'));
+      o.classList.add('sel'); answers[key] = o.dataset.v;
+      setTimeout(() => show(cur + 1), 220);
+    }
+  }));
+});
+function runLoader() {
+  const li = steps[cur].querySelectorAll('li');
+  li.forEach((l, k) => setTimeout(() => l.classList.add('ok'), 600 + k * 700));
+  setTimeout(() => show(cur + 1), 600 + li.length * 700 + 500);
+}
+
+const BOOKS = {
+  A0: ['The Tale of Peter Rabbit', 'A1'], A1: ['The Tale of Peter Rabbit', 'A1'],
+  A2: ['English Fairy Tales: The Three Little Pigs', 'A2'], B1: ['The Wonderful Wizard of Oz', 'B1'],
+};
+const NEXT = { tales: 'сказки Беатрис Поттер', fables: 'басни Эзопа', adventure: '«Волшебник страны Оз»', classic: '«Алиса в Стране чудес»' };
+function buildPlan() {
+  const min = +(answers.minutes || 10);
+  const words = { 5: 120, 10: 250, 15: 380, 20: 500 }[min] || 250;
+  const b = BOOKS[answers.level] || BOOKS.A1;
+  document.getElementById('planBox').innerHTML = [
+    ['Первая книга', b[0]],
+    ['Уровень', b[1]],
+    ['В день', min + ' мин (≈ ' + Math.round(min * 40) + ' слов текста)'],
+    ['За 30 дней', '≈ ' + words + ' новых слов в карточках'],
+    ['Потом', NEXT[answers.genre] || 'сказки Беатрис Поттер'],
+  ].map(r => '<div class="row"><span class="k">' + r[0] + '</span><span class="v">' + r[1] + '</span></div>').join('');
+}
+
+// Абзацы: [[слово или фраза, перевод], ...], перевод абзаца. Знаки препинания — с пустым переводом.
+const PAGE = [
+  [[['Once upon a time', 'жили-были, давным-давно'], ['there were', 'были, жили'], ['four', 'четыре'], ['little', 'маленький'], ['Rabbits', 'кролики'], [',', ''], ['and', 'и'], ['their', 'их'], ['names', 'имена'], ['were', 'были (их звали)'], ['Flopsy', 'Флопси (имя)'], [',', ''], ['Mopsy', 'Мопси (имя)'], [',', ''], ['Cotton-tail', 'Ватный Хвостик (имя)'], [',', ''], ['and', 'и'], ['Peter', 'Питер'], ['.', '']],
+    'Жили-были четыре маленьких кролика, и звали их Флопси, Мопси, Ватный Хвостик и Питер.'],
+  [[['They', 'они'], ['lived', 'жили'], ['with', 'с'], ['their', 'их'], ['Mother', 'мама'], ['in', 'в'], ['a', '(какой-то; неопределённый артикль)'], ['sand-bank', 'песчаный холм'], [',', ''], ['underneath', 'под'], ['the root', 'корень'], ['of', '(чего-то)'], ['a', '(неопределённый артикль)'], ['very', 'очень'], ['big', 'большой'], ['fir-tree', 'ель'], ['.', '']],
+    'Они жили с мамой в песчаном холме, под корнем очень большой ели.'],
+  [[['Then', 'потом, затем'], ['old', 'старая'], ['Mrs. Rabbit', 'миссис Крольчиха'], ['took', 'взяла (take — брать)'], ['a basket', 'корзинка'], ['and', 'и'], ['her', 'её, свой'], ['umbrella', 'зонтик'], [',', ''], ['and', 'и'], ['went', 'пошла (go — идти)'], ['through', 'через'], ['the wood', 'лес'], ['to', 'к, в'], ['the baker\'s', 'пекарня, булочная'], ['.', ''], ['She', 'она'], ['bought', 'купила (buy — покупать)'], ['a loaf of', 'буханка (чего-то)'], ['brown bread', 'чёрный (ржаной) хлеб'], ['and', 'и'], ['five', 'пять'], ['currant buns', 'булочки с изюмом'], ['.', '']],
+    'Потом старая миссис Крольчиха взяла корзинку и зонтик и пошла через лес в булочную. Она купила буханку чёрного хлеба и пять булочек с изюмом.'],
+  [[['But', 'но'], ['Peter', 'Питер'], [',', ''], ['who', 'который'], ['was', 'был'], ['very', 'очень'], ['naughty', 'непослушный'], [',', ''], ['ran', 'побежал (run — бежать)'], ['straight away', 'сразу же, прямиком'], ['to', 'к, в'], ['Mr. McGregor\'s', 'мистера Мак-Грегора'], ['garden', 'сад, огород'], [',', ''], ['and', 'и'], ['squeezed', 'протиснулся'], ['under', 'под'], ['the gate', 'калитка, ворота'], ['!', '']],
+    'Но Питер, который был очень непослушным, побежал прямиком в огород мистера Мак-Грегора и протиснулся под калиткой!'],
+];
+let voice = null;
+function pickVoice() { const vs = speechSynthesis.getVoices(); voice = vs.find(v => /^en-(US|GB)/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null; }
+if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function say(text) {
+  if (!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; if (voice) u.voice = voice; u.rate = .85;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+let tipT;
+function tip(t) { const el = document.getElementById('tip'); el.textContent = t; el.classList.add('on'); clearTimeout(tipT); tipT = setTimeout(() => el.classList.remove('on'), 2200); }
+const known = new Set();
+function buildReader() {
+  const box = document.getElementById('reader');
+  box.innerHTML = '<div class="title">Beatrix Potter · The Tale of Peter Rabbit · стр. 1</div>';
+  PAGE.forEach(([words, ru]) => {
+    const p = document.createElement('div'); p.className = 'para';
+    const en = document.createElement('div'); en.className = 'en';
+    words.forEach(([w, tr], k) => {
+      if (!tr) { en.append(w); return; }
+      if (k) en.append(' ');
+      const s = document.createElement('span'); s.className = 'w'; s.textContent = w;
+      s.addEventListener('click', () => {
+        box.querySelectorAll('.w.act').forEach(x => x.classList.remove('act')); s.classList.add('act');
+        tip(w + ' — ' + tr); say(w); known.add(w.toLowerCase());
+        document.getElementById('saved').innerHTML = 'В ваших карточках: <b>' + known.size + '</b> ' + plural(known.size) + ' — в приложении они вернутся на повторение.';
+      });
+      en.append(s);
+    });
+    const full = words.map(x => x[0]).join(' ').replace(/ ([!?.,])/g, '$1');
+    const ruEl = document.createElement('div'); ruEl.className = 'ru'; ruEl.textContent = ru;
+    const tools = document.createElement('div'); tools.className = 'tools';
+    const a = document.createElement('button'); a.className = 'chip'; a.textContent = '🔊 Послушать'; a.onclick = () => say(full);
+    const b = document.createElement('button'); b.className = 'chip'; b.textContent = 'Перевод абзаца'; b.onclick = () => p.classList.toggle('show');
+    tools.append(a, b); p.append(en, ruEl, tools); box.append(p);
+  });
+}
+function plural(n) { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? 'слово' : m >= 2 && m <= 4 && (h < 12 || h > 14) ? 'слова' : 'слов'; }
+
+document.getElementById('send').addEventListener('click', async () => {
+  const contact = document.getElementById('contact').value.trim(), err = document.getElementById('err');
+  const okMail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(contact), okTg = /^@[A-Za-z0-9_]{4,32}$/.test(contact);
+  if (!okMail && !okTg) { err.textContent = 'Укажите e-mail или Telegram в формате @nickname'; return; }
+  if (!document.getElementById('agree').checked) { err.textContent = 'Поставьте, пожалуйста, галочку согласия'; return; }
+  err.textContent = '';
+  const btn = document.getElementById('send'); btn.disabled = true; btn.textContent = 'Отправляем…';
+  const payload = { name: document.getElementById('name').value.trim(), contact, answers, words_tapped: known.size, lang: navigator.language, ref: document.referrer || '' };
+  try {
+    if (ENDPOINT) {
+      const r = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      if (!r.ok) throw new Error(r.status);
+    }
+    show(cur + 1);
+  } catch (e) {
+    err.textContent = 'Не удалось отправить. Попробуйте ещё раз через минуту.'; btn.disabled = false; btn.textContent = 'Записаться';
+  }
+});
+document.getElementById('share').addEventListener('click', async () => {
+  const data = { title: 'Строчка — английский через лёгкие книги', text: 'Учу английский по лёгким книгам: нажимаешь на слово — видишь перевод. Записывайся в ранний доступ:', url: location.href.split('#')[0] };
+  try { if (navigator.share) { await navigator.share(data); return; } } catch (e) { return; }
+  try { await navigator.clipboard.writeText(data.text + ' ' + data.url); tip('Ссылка скопирована'); } catch (e) { tip(data.url); }
+});
+</script>
+</body>
+</html>
