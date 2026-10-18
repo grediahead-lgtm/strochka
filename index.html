@@ -58,6 +58,9 @@ h2{font:800 24px/1.22 Unbounded,sans-serif;color:var(--green);text-wrap:balance;
 .en{font:500 20px/1.8 Lora,Georgia,serif}
 .w{border-bottom:2px dotted var(--green2);cursor:pointer;padding:0 1px;border-radius:4px}
 .w.act{background:var(--sun)}
+.w.known{background:#e3f3ec}
+.resume{display:block;width:100%;margin:0 0 4px;padding:15px;border:2px solid var(--green2);border-radius:16px;background:#eef8f3;color:var(--green);font:800 17px Manrope,sans-serif;cursor:pointer;text-align:left}
+.resume small{display:block;font-weight:600;color:var(--muted);font-size:14px;margin-top:2px}
 .ru{color:var(--muted);font-size:15px;display:none}
 .para.show .ru{display:block}
 .tools{display:flex;gap:8px;flex-wrap:wrap}
@@ -210,7 +213,13 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:16px 0 24px}
 // ENDPOINT: сценарий n8n на Railway «Строчка: ранний доступ → Дени» (StrochkaSignup01).
 const ENDPOINT = 'https://n8n-production-bfdf.up.railway.app/webhook/strochka-signup';
 const steps = [...document.querySelectorAll('.step')];
-const answers = {};
+// Прогресс читателя хранится в его браузере (localStorage): ответы теста, шаг, абзац, нажатые слова, записался ли.
+// Контакт не храним. Без доступа к хранилищу (приватный режим) сайт работает как раньше, просто без памяти.
+const KEY = 'strochka-v1';
+let saved = {};
+try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+function persist(patch) { Object.assign(saved, patch, { t: Date.now() }); try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} }
+const answers = Object.assign({}, saved.answers || {});
 let cur = 0;
 const prog = document.getElementById('prog'), bar = document.getElementById('bar');
 const qCount = steps.filter(s => s.dataset.step === 'q').length;
@@ -226,6 +235,7 @@ function show(i) {
   if (s.dataset.step === 'load') runLoader();
   if (s.dataset.step === 'plan') buildPlan();
   if (s.dataset.step === 'lesson') buildReader();
+  if (!['start', 'load'].includes(s.dataset.step)) persist({ step: s.dataset.step, answers });
 }
 document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => show(cur + 1)));
 document.querySelectorAll('.step[data-step=q]').forEach(s => {
@@ -266,6 +276,16 @@ function buildPlan() {
   ].map(r => '<div class="row"><span class="k">' + r[0] + '</span><span class="v">' + r[1] + '</span></div>').join('');
 }
 
+function addResume() {
+  if (!saved.step || saved.step === 'q') return;
+  const hasRead = ['lesson', 'form', 'done'].includes(saved.step);
+  const btn = document.createElement('button'); btn.className = 'resume';
+  const n = known.size, para = (saved.para || 0) + 1;
+  btn.innerHTML = hasRead ? '📖 Продолжить чтение<small>Peter Rabbit, стр. 1, абзац ' + para + ' из ' + PAGE.length + (n ? ' · в карточках ' + n + ' ' + plural(n) : '') + '</small>'
+                          : '🗂️ Вернуться к своему плану<small>ответы теста сохранены</small>';
+  btn.onclick = () => show(steps.findIndex(x => x.dataset.step === (hasRead ? 'lesson' : 'plan')));
+  const start = steps[0]; start.insertBefore(btn, start.querySelector('.spacer'));
+}
 // Абзацы: [[слово или фраза, перевод], ...], перевод абзаца. Знаки препинания — с пустым переводом.
 const PAGE = [
   [[['Once upon a time', 'жили-были, давным-давно'], ['there were', 'были, жили'], ['four', 'четыре'], ['little', 'маленький'], ['Rabbits', 'кролики'], [',', ''], ['and', 'и'], ['their', 'их'], ['names', 'имена'], ['were', 'были (их звали)'], ['Flopsy', 'Флопси (имя)'], [',', ''], ['Mopsy', 'Мопси (имя)'], [',', ''], ['Cotton-tail', 'Ватный Хвостик (имя)'], [',', ''], ['and', 'и'], ['Peter', 'Питер'], ['.', '']],
@@ -296,20 +316,21 @@ function say(text) {
 }
 let tipT;
 function tip(t) { const el = document.getElementById('tip'); el.textContent = t; el.classList.add('on'); clearTimeout(tipT); tipT = setTimeout(() => el.classList.remove('on'), 2200); }
-const known = new Set();
+const known = new Set(saved.known || []);
 function buildReader() {
   const box = document.getElementById('reader');
   box.innerHTML = '<div class="title">Beatrix Potter · The Tale of Peter Rabbit · стр. 1</div>';
-  PAGE.forEach(([words, ru]) => {
-    const p = document.createElement('div'); p.className = 'para';
+  PAGE.forEach(([words, ru], pi) => {
+    const p = document.createElement('div'); p.className = 'para'; p.dataset.i = pi;
     const en = document.createElement('div'); en.className = 'en';
     words.forEach(([w, tr], k) => {
       if (!tr) { en.append(w); return; }
       if (k) en.append(' ');
-      const s = document.createElement('span'); s.className = 'w'; s.textContent = w;
+      const s = document.createElement('span'); s.className = 'w' + (known.has(w.toLowerCase()) ? ' known' : ''); s.textContent = w;
       s.addEventListener('click', () => {
         box.querySelectorAll('.w.act').forEach(x => x.classList.remove('act')); s.classList.add('act');
-        tip(w + ' — ' + tr); say(w); known.add(w.toLowerCase());
+        tip(w + ' — ' + tr); say(w); known.add(w.toLowerCase()); s.classList.add('known');
+        persist({ known: [...known], para: Math.max(saved.para || 0, pi) });
         document.getElementById('saved').innerHTML = 'В ваших карточках: <b>' + known.size + '</b> ' + plural(known.size) + ' — в приложении они вернутся на повторение.';
       });
       en.append(s);
@@ -321,7 +342,15 @@ function buildReader() {
     const b = document.createElement('button'); b.className = 'chip'; b.textContent = 'Перевод абзаца'; b.onclick = () => p.classList.toggle('show');
     tools.append(a, b); p.append(en, ruEl, tools); box.append(p);
   });
+  if (known.size) document.getElementById('saved').innerHTML = 'В ваших карточках: <b>' + known.size + '</b> ' + plural(known.size) + ' — в приложении они вернутся на повторение.';
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) persist({ para: Math.max(saved.para || 0, +e.target.dataset.i) }); }), { threshold: 0.6 });
+    box.querySelectorAll('.para').forEach(x => io.observe(x));
+  }
+  const at = saved.para || 0;
+  if (at > 0) setTimeout(() => { const el = box.querySelector('.para[data-i="' + at + '"]'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 150);
 }
+addResume();
 function plural(n) { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? 'слово' : m >= 2 && m <= 4 && (h < 12 || h > 14) ? 'слова' : 'слов'; }
 
 document.getElementById('send').addEventListener('click', async () => {
@@ -337,6 +366,7 @@ document.getElementById('send').addEventListener('click', async () => {
       const r = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       if (!r.ok) throw new Error(r.status);
     }
+    persist({ signed: true });
     show(cur + 1);
   } catch (e) {
     err.textContent = 'Не удалось отправить. Попробуйте ещё раз через минуту.'; btn.disabled = false; btn.textContent = 'Записаться';
