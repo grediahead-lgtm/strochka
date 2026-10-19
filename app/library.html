@@ -83,7 +83,7 @@ const pageOf = (b, para) => { let k = 0; b.idx.forEach((s, j) => { if (s <= para
 
 // голос
 let VOICE = null;
-function pickVoice() { const v = (speechSynthesis.getVoices() || []).filter(v => /^en(-|_)/i.test(v.lang)); let st = {}; try { st = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {} VOICE = v.find(x => x.name === st.voice) || v.find(x => /samantha|karen|daniel|serena|google us english/i.test(x.name)) || v[0] || null; }
+function pickVoice() { const v = (speechSynthesis.getVoices() || []).filter(v => /^en(-|_)/i.test(v.lang)); let st = {}; try { st = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {} VOICE = v.find(x => (x.voiceURI || x.name) === st.voice) || v.find(x => x.name === st.voice) || v.find(x => /samantha|саманта|karen|карен|daniel|даніель|даниэль|serena|ava|ава|google us english/i.test(x.name)) || v[0] || null; }
 if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 function say(t, rate) { if (!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t.replace(/[«»"'‘’]/g, '')); if (VOICE) { u.voice = VOICE; u.lang = VOICE.lang; } else u.lang = 'en-US'; u.rate = rate || 0.9; speechSynthesis.speak(u); }
 

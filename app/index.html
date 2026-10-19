@@ -117,18 +117,23 @@ function render(html) { $('#app').innerHTML = html; window.scrollTo(0, 0); const
 
 // ---------- голос (бесплатный, встроенный в телефон/браузер) ----------
 let VOICES = [];
-const GOOD = /samantha|karen|daniel|moira|serena|google us english|google uk english female|microsoft (aria|jenny|libby|sonia)|ava|allison|susan|tessa/i;
-const FUNNY = /albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|junior|ralph|fred|kathy|eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley/i;
+// Имена голосов iPhone переводит на язык системы (19.10: «Саманта», «Бульбашки»), поэтому списки на трёх языках.
+const GOOD = /samantha|саманта|karen|карен|daniel|даніель|даниэль|даниель|moira|мойра|serena|серена|tessa|тесса|\bava\b|ава|эва|allison|эллисон|еллісон|susan|сьюзен|zoe|зоя|google us english|google uk english female|microsoft (aria|jenny|libby|sonia)/i;
+const FUNNY = /albert|альберт|bad news|погані новини|плохие новости|bahh|бахх|bells|дзвони|колокол|boing|пружина|bubbles|бульбашки|пузыр|cellos|віолончель|виолончел|good news|хороші новини|хорошие новости|jester|блазень|шут|organ|орган|superstar|суперзірка|суперзвезд|trinoids|триноїд|триноид|whisper|шепіт|шёпот|шепот|wobble|вібрато|вибрато|zarvox|зарвокс|junior|підліток|подросток|ralph|ральф|fred|фред|kathy|кеті|кэти|кейти|eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley|hysterical|істеричн|истерич/i;
+// Голоса: ключ — voiceURI (у компактной и улучшенной Samantha одно имя), улучшенные выше.
+const vkey = v => v.voiceURI || v.name;
+const vq = v => /premium|преміум|премиум/i.test(vkey(v) + v.name) ? 3 : /enhanced|natural|neural|покращ|улучш/i.test(vkey(v) + v.name) ? 2 : 1;
+const vlabel = v => v.name + ({ 3: ' · премиум', 2: ' · улучшенный' }[vq(v)] || '') + ' (' + v.lang + ')';
 function loadVoices() {
   const all = (speechSynthesis.getVoices() || []).filter(v => /^en(-|_)/i.test(v.lang) && !FUNNY.test(v.name));
-  VOICES = all.sort((a, b) => (GOOD.test(b.name) - GOOD.test(a.name)) || (/en.US/i.test(b.lang) - /en.US/i.test(a.lang)));
+  VOICES = all.sort((a, b) => (vq(b) - vq(a)) || (GOOD.test(b.name) - GOOD.test(a.name)) || (/en.US/i.test(b.lang) - /en.US/i.test(a.lang)));
 }
-if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = () => { loadVoices(); if ($('#vc')) settings(); }; }
 function say(text, rate) {
   if (!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text.replace(/[«»"]/g, ''));
-  const v = VOICES.find(x => x.name === S.voice) || VOICES[0];
+  const v = VOICES.find(x => vkey(x) === S.voice) || VOICES.find(x => x.name === S.voice) || VOICES[0];
   if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-US';
   u.rate = rate || S.rate;
   speechSynthesis.speak(u);
@@ -336,11 +341,12 @@ function unlock() {
   } else $('#codeMsg').textContent = 'Код не подошёл.';
 }
 function settings() {
+  if ('speechSynthesis' in window) { loadVoices(); if (!VOICES.length && !settings.retry) { settings.retry = 1; setTimeout(() => { settings.retry = 0; if ($('#vc')) settings(); }, 700); } }
   render(`<h1>Настройки</h1>
     <div class="card">
       <label class="set">Начать с месяца<select id="lv">${MONTHS.map(m => `<option value="${m.n}" ${m.n === (S.start || 1) ? 'selected' : ''}>${m.n} · ${m.level}</option>`).join('')}</select></label>
       <label class="set">Минут в день<select id="mn">${[10, 15, 20, 30].map(m => `<option ${m === S.minutes ? 'selected' : ''}>${m}</option>`).join('')}</select></label>
-      <label class="set">Голос<select id="vc" style="max-width:60%">${VOICES.length ? VOICES.map(v => `<option ${v.name === S.voice ? 'selected' : ''} value="${esc(v.name)}">${esc(v.name)} (${v.lang})</option>`).join('') : '<option>голоса не найдены</option>'}</select></label>
+      <label class="set">Голос<select id="vc" style="max-width:60%">${VOICES.length ? VOICES.map(v => `<option ${vkey(v) === S.voice || (v.name === S.voice && !VOICES.some(x => vkey(x) === S.voice)) ? 'selected' : ''} value="${esc(vkey(v))}">${esc(vlabel(v))}</option>`).join('') : '<option>голоса загружаются…</option>'}</select></label>
       <label class="set">Скорость речи<input type="range" id="rt" min="0.6" max="1.1" step="0.05" value="${S.rate}"></label>
       <button class="btn light" onclick="S.voice=$('#vc').value;S.rate=+$('#rt').value;say('Hello! This is my voice. How are you today?')">▶ Проверить голос</button>
     </div>
@@ -348,7 +354,7 @@ function settings() {
     <button class="btn ghost" onclick="test(0,0)">Пройти тест уровня заново</button>
     <div class="card" style="margin-top:14px"><label class="set">Код доступа<input id="code" autocomplete="off" autocapitalize="off" style="flex:1;max-width:180px;padding:10px;border:2px solid var(--line);border-radius:12px" placeholder="если есть"></label>
       <button class="btn light" onclick="unlock()">Применить код</button><p class="muted" id="codeMsg" style="margin:8px 0 0;font-size:14px"></p></div>
-    <p class="muted" style="margin-top:18px;font-size:14px">Совет: на iPhone самые приятные голоса — Samantha и Karen. Их можно скачать: Настройки → Универсальный доступ → Устный контент → Голоса → English.</p>`);
+    <p class="muted" style="margin-top:18px;font-size:14px">Совет: на iPhone самые приятные голоса — Samantha и Ava с пометкой «улучшенный». Их можно скачать: Настройки → Универсальный доступ → Устный контент → Голоса → English.</p>`);
 }
 home();
 </script>
