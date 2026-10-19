@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Строчка · Библиотека</title>
+<meta name="theme-color" content="#fbf7f0">
+<style>
+:root{--ink:#1d2433;--muted:#667085;--bg:#fbf7f0;--card:#fff;--line:#ece4d6;--green:#1f7a5c;--green-soft:#e6f4ee;--amber:#b7791f;--amber-soft:#fdf3e1}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:500 17px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 16px calc(90px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;gap:10px;margin:4px 0 16px}
+header b{font-size:20px;color:var(--green)}header .muted{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}header a{margin-left:auto;flex:none;white-space:nowrap;color:var(--green);font-weight:700;text-decoration:none;font-size:15px}
+h1{font-size:26px;line-height:1.2;margin:6px 0 10px;letter-spacing:-.02em;text-wrap:balance}
+.muted{color:var(--muted)}
+.book{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 12px;cursor:pointer}
+.book .cv{flex:none;width:56px;height:76px;border-radius:8px;display:grid;place-items:center;font-size:30px;background:var(--green-soft)}
+.book .t{flex:1;min-width:0}.book .t b{display:block;font-size:18px;line-height:1.25}.book .t small{display:block;color:var(--muted);font-size:14px}
+.bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:8px}.bar i{display:block;height:100%;background:var(--green)}
+.page{font:500 21px/1.8 Georgia,"Times New Roman",serif;background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 18px}
+.page p{margin:0 0 18px}
+.s{cursor:pointer}.s.on{background:#fff7d6;border-radius:6px}
+.w{border-radius:5px}.w.hit{background:#ffe58a}
+.tr{display:block;font:500 15px/1.45 system-ui,-apple-system,sans-serif;color:var(--muted);margin:4px 0 2px}
+[hidden]{display:none!important}
+.nav{position:fixed;left:0;right:0;bottom:0;background:rgba(251,247,240,.96);border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:center;justify-content:center}
+.nav button{flex:1;max-width:220px;border:0;border-radius:14px;padding:14px;font:700 16px system-ui,-apple-system,sans-serif;background:var(--green);color:#fff;cursor:pointer}
+.nav button.light{background:var(--green-soft);color:var(--green)}.nav button:disabled{opacity:.4}
+.nav span{flex:none;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:64px;text-align:center}
+.pop{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(620px,calc(100% - 32px));background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,.25);z-index:9}
+.pop b{font-size:19px}.pop small{display:block;color:#c6cbd6;margin-top:6px;font-size:15px}
+.pop .row{display:flex;gap:8px;margin-top:10px}.pop button{border:0;border-radius:10px;padding:8px 12px;font:700 14px system-ui,sans-serif;background:#2f3a52;color:#fff;cursor:pointer}
+.pop button.add{background:var(--green)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.tools button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font:600 14px system-ui,sans-serif;color:var(--ink);cursor:pointer}
+.tools button.on{background:var(--green);color:#fff;border-color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><b>Библиотека</b><span class="muted">читай, сколько хочется</span><a href="./">← Уроки</a></header>
+  <main id="app"></main>
+</div>
+<div class="nav" id="nav" hidden><button class="light" id="prev">← Назад</button><span id="pg"></span><button id="next">Дальше →</button></div>
+<script src="wmatch.js"></script>
+<script src="books/common.js"></script>
+<script src="books/peter.js"></script>
+<script src="books/alice.js"></script>
+<script>
+const KEY = 'strochka-app-v1', LKEY = 'strochka-lib-v1', PER = 6;   // абзацев на странице
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+let LIB = {}; try { LIB = JSON.parse(localStorage.getItem(LKEY)) || {}; } catch (e) {}
+LIB.pos = LIB.pos || {}; LIB.showTr = !!LIB.showTr;
+const saveLib = () => { try { localStorage.setItem(LKEY, JSON.stringify(LIB)); } catch (e) {} };
+const BOOKSL = window.BOOKS.map(b => ({ ...b, per: b.per || PER, pages: Math.ceil(b.p.length / (b.per || PER)) }));
+
+// голос
+let VOICE = null;
+function pickVoice() { const v = (speechSynthesis.getVoices() || []).filter(v => /^en(-|_)/i.test(v.lang)); let st = {}; try { st = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {} VOICE = v.find(x => x.name === st.voice) || v.find(x => /samantha|karen|daniel|serena|google us english/i.test(x.name)) || v[0] || null; }
+if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function say(t, rate) { if (!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t.replace(/[«»"'‘’]/g, '')); if (VOICE) { u.voice = VOICE; u.lang = VOICE.lang; } else u.lang = 'en-US'; u.rate = rate || 0.9; speechSynthesis.speak(u); }
+
+// словарь: ищем фразу или слово в разных формах
+function lookup(book, words, i) {
+  const d = book.all || (book.all = { ...window.COMMON, ...(book.dict || {}) });
+  for (const n of [4, 3, 2]) { const ph = words.slice(i, i + n).join(' '); if (n > 1 && d[ph]) return [ph, d[ph]]; for (let k = 1; k < n; k++) { const ph2 = words.slice(i - k, i - k + n).join(' '); if (i - k >= 0 && d[ph2]) return [ph2, d[ph2]]; } }
+  const w = words[i]; if (d[w]) return [w, d[w]];
+  for (const k in d) if (!k.includes(' ') && wmatch(w, k)) return [k, d[k]];
+  return null;
+}
+// в словарь приложения (карточки на повторение)
+function addCard(en, ru, src) {
+  let S; try { S = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  if (!S || S.v !== 1) S = { v: 1, name: '', level: 'A1', start: 1, minutes: 15, done: {}, cards: {}, days: [], rate: 0.9, voice: '' };
+  if (S.cards[en]) return false;
+  S.cards[en] = { ru, lesson: src, box: 0, due: today() };
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+  return true;
+}
+
+function shelf() {
+  $('#nav').hidden = true; closePop();
+  $('#app').innerHTML = `<h1>Книги на английском</h1>
+    <p class="muted">Нажми на слово — перевод и озвучка. Нажми на ▸ у фразы — перевод всей фразы. Слова можно добавлять в свой словарь, они появятся в повторении.</p>
+    ${BOOKSL.map((b, k) => { const pos = LIB.pos[b.id] || 0; return `<div class="book" onclick="openBook(${k})"><div class="cv">${b.id === 'peter' ? '🐰' : '🎩'}</div><div class="t"><b>${esc(b.title)}</b><small>${esc(b.ru)} · ${esc(b.author)} · ${b.level}</small>
+      <small>${pos ? `Страница ${pos + 1} из ${b.pages}` : `${b.pages} стр.`}${b.more ? ' · ' + esc(b.more) : ''}</small><div class="bar"><i style="width:${(pos + 1) / b.pages * 100}%"></i></div></div></div>`; }).join('')}`;
+  window.scrollTo(0, 0);
+}
+let B = null, P = 0;
+function openBook(k) { B = BOOKSL[k]; P = Math.min(LIB.pos[B.id] || 0, B.pages - 1); page(); }
+function page() {
+  closePop(); LIB.pos[B.id] = P; saveLib();
+  const ps = B.p.slice(P * B.per, P * B.per + B.per);
+  let si = 0;
+  const html = ps.map((para, pi) => `<p>${para.map(([en, ru], k) => {
+    const id = (P * B.per + pi) + '-' + k;
+    const toks = en.split(/(\s+|—)/).map(t => /^\s+$|^—$/.test(t) || !/[A-Za-z]/.test(t) ? esc(t) : `<span class="w">${esc(t)}</span>`).join('');
+    return `<span class="s" data-id="${id}" data-en="${esc(en)}" data-ru="${esc(ru)}">${toks}</span> <span class="tr" ${LIB.showTr ? '' : 'hidden'}>${esc(ru)}</span>`;
+  }).join(' ')}</p>`).join('');
+  $('#app').innerHTML = `<p class="muted" style="margin:0 0 6px;font-size:14px">${esc(B.title)}${B.chap ? ' · ' + esc(B.chap(P * B.per)) : ''}</p>
+    <div class="tools"><button onclick="shelf()">📚 Все книги</button><button class="${LIB.showTr ? 'on' : ''}" onclick="LIB.showTr=!LIB.showTr;saveLib();page()">Перевод под фразами</button><button onclick="say([...document.querySelectorAll('.s')].map(s=>s.dataset.en).join(' '))">▶ Читать вслух</button></div>
+    <div class="page" id="pageEl">${html}</div>
+    ${P === B.pages - 1 ? `<p class="muted" style="margin-top:14px;text-align:center">${B.more ? esc(B.more) : 'Книга закончилась. Браво! 🎉'}</p>` : ''}`;
+  $('#nav').hidden = false; $('#pg').textContent = `${P + 1} / ${B.pages}`;
+  $('#prev').disabled = P === 0; $('#next').disabled = P === B.pages - 1;
+  window.scrollTo(0, 0);
+}
+$('#prev').onclick = () => { if (P > 0) { P--; page(); } };
+$('#next').onclick = () => { if (P < B.pages - 1) { P++; page(); } };
+document.addEventListener('click', e => {
+  const w = e.target.closest('.w'); if (!w || !$('#pageEl')?.contains(w)) return;
+  const s = w.closest('.s'), all = [...s.querySelectorAll('.w')], i = all.indexOf(w);
+  const words = all.map(x => x.textContent.toLowerCase().replace(/[’‘]/g, "'").replace(/[^a-z'\-]/g, '').replace(/^['\-]+|['\-]+$/g, ''));
+  document.querySelectorAll('.w.hit,.s.on').forEach(x => x.classList.remove('hit', 'on'));
+  w.classList.add('hit'); s.classList.add('on');
+  const hit = lookup(B, words, i), word = hit ? hit[0] : words[i];
+  say(word, 0.85);
+  showPop(`<b>${esc(word)}</b>${hit ? ' — ' + esc(hit[1]) : ''}<small>${esc(s.dataset.ru)}</small>
+    <div class="row">${hit ? `<button class="add" onclick="this.textContent=addCard('${esc(hit[0]).replace(/'/g, "\\'")}','${esc(hit[1]).replace(/'/g, "\\'")}','${B.id}')?'✓ В словаре':'Уже в словаре'">+ В мой словарь</button>` : ''}<button onclick="say(this.closest('.pop').dataset.en)">▶ Фраза</button><button onclick="closePop()">✕</button></div>`, s.dataset.en);
+});
+function showPop(html, en) { let p = $('.pop'); if (!p) { p = document.createElement('div'); p.className = 'pop'; document.body.appendChild(p); } p.innerHTML = html; p.dataset.en = en; }
+function closePop() { $('.pop')?.remove(); document.querySelectorAll('.w.hit,.s.on').forEach(x => x.classList.remove('hit', 'on')); }
+shelf();
+</script>
+</body>
+</html>

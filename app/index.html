@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Строчка · английский каждый день</title>
+<meta name="theme-color" content="#fbf7f0">
+<style>
+:root{--ink:#1d2433;--muted:#667085;--bg:#fbf7f0;--card:#fff;--line:#ece4d6;--green:#1f7a5c;--green-soft:#e6f4ee;--amber:#b7791f;--amber-soft:#fdf3e1;--red:#b42318;--red-soft:#fdecea;--blue:#2f5fb3}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:500 17px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:640px;margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 16px calc(30px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;gap:10px;margin:4px 0 16px}
+header b{font-size:20px;color:var(--green);letter-spacing:-.01em}
+header .muted{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+header .streak{margin-left:auto;white-space:nowrap;flex:none;font-weight:700;color:var(--amber);background:var(--amber-soft);border-radius:999px;padding:4px 12px;font-size:15px}
+h1{font-size:26px;line-height:1.2;margin:6px 0 10px;letter-spacing:-.02em}
+h2{font-size:19px;margin:22px 0 10px}
+p{margin:0 0 12px}
+.muted{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:0 0 12px}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:15px 18px;font:700 17px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--green);color:#fff;cursor:pointer;margin-top:10px}
+.btn.ghost{background:transparent;color:var(--green);border:2px solid var(--green)}
+.btn.light{background:var(--green-soft);color:var(--green)}
+.btn:disabled{opacity:.45}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:2px solid var(--line);border-radius:14px;padding:13px 16px;margin:8px 0;font:600 17px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);cursor:pointer}
+.opt.ok{border-color:var(--green);background:var(--green-soft)}.opt.bad{border-color:var(--red);background:var(--red-soft)}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--green);border-radius:99px;transition:width .3s}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.stats div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stats b{display:block;font-size:24px;color:var(--green)}.stats span{font-size:13px;color:var(--muted)}
+.lesson{display:flex;align-items:center;gap:12px;padding:12px 4px;border-top:1px solid var(--line);cursor:pointer}
+.lesson:first-child{border-top:0}
+.lv{font:700 12px/1 system-ui,-apple-system,sans-serif;border-radius:8px;padding:6px 7px;background:var(--amber-soft);color:var(--amber);flex:none}
+.lesson .t{flex:1}.lesson .t small{display:block;color:var(--muted)}
+.done{color:var(--green);font-weight:800}
+.text{font:500 21px/1.75 Georgia,"Times New Roman",serif}
+.sent{margin:0 0 14px}
+.w{cursor:pointer;border-radius:6px;padding:1px 1px}
+.w.key{border-bottom:2px dotted var(--green)}
+.w.on{background:#fff2b8}
+[hidden]{display:none!important}
+.tr{display:block;font:500 15px/1.4 system-ui,-apple-system,sans-serif;color:var(--muted);margin-top:2px}
+.say{border:0;background:var(--green-soft);color:var(--green);border-radius:10px;padding:4px 10px;font:700 14px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer;margin-left:6px;vertical-align:middle}
+.pop{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(600px,calc(100% - 32px));background:var(--ink);color:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 12px 40px rgba(0,0,0,.25);font-size:17px;z-index:9}
+.pop small{display:block;color:#c6cbd6;margin-top:4px}
+.flash{font-size:30px;font-weight:800;text-align:center;margin:18px 0 6px}
+.flash-ru{text-align:center;color:var(--muted);font-size:20px;min-height:30px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;min-height:48px;padding:10px;border:2px dashed var(--line);border-radius:14px;margin:10px 0}
+.chip{border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;font:600 17px system-ui,-apple-system,"Segoe UI",sans-serif;cursor:pointer}
+.steps{display:flex;gap:6px;margin:0 0 14px}.steps i{flex:1;height:6px;border-radius:9px;background:var(--line)}.steps i.on{background:var(--green)}
+.center{text-align:center}
+.big{font-size:52px;margin:6px 0}
+label.set{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:10px 0}
+select,input[type=range]{font:inherit}
+a{color:var(--green)}
+.rule{background:var(--amber-soft);border:1px solid #f1dfbd;border-radius:14px;padding:12px 14px;margin:0 0 12px;font-size:16px}
+.rule b{display:block;color:var(--amber);font-size:13px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
+.month{border:1px solid var(--line);background:#fff;border-radius:16px;margin:0 0 10px;overflow:hidden}
+.month summary{list-style:none;display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.month summary::-webkit-details-marker{display:none}
+.month .mn{flex:none;width:38px;height:38px;border-radius:12px;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-weight:800}
+.month.cur .mn{background:var(--green);color:#fff}
+.month .t{flex:1;min-width:0}.month .t small{display:block;color:var(--muted);font-size:14px}
+.month .cnt{flex:none;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.week{padding:0 16px 8px}.week h3{font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:10px 0 0}
+.lesson.next{background:var(--green-soft);border-radius:12px;padding-left:10px;padding-right:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><b>Строчка</b><span class="muted">английский по 15 минут</span><span class="streak" id="streak" hidden></span></header>
+  <main id="app"></main>
+</div>
+<script src="wmatch.js"></script>
+<script src="content.js"></script>
+<script src="c-m1.js"></script>
+<script src="c-m2.js"></script>
+<script src="c-x1.js"></script>
+<script src="c-m3.js"></script>
+<script src="c-m4.js"></script>
+<script src="c-m5.js"></script>
+<script src="c-m6.js"></script>
+<script src="c-g.js"></script>
+<script src="course.js"></script>
+<script>
+// ---------- состояние (хранится только в этом браузере) ----------
+const KEY = 'strochka-app-v1', DAY = 864e5;
+// Ссылка на библиотеку видна только в личной версии (?lib один раз — запоминается в этом браузере).
+let LIB_LINK = false; try { if (/[?&]lib\b/.test(location.search)) localStorage.setItem('strochka-lib-on', '1'); LIB_LINK = localStorage.getItem('strochka-lib-on') === '1'; } catch (e) {}
+const ymd = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const today = () => ymd(new Date());
+let S = load();
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) return s; } catch (e) {}
+  return { v: 1, name: '', level: null, minutes: 15, done: {}, cards: {}, days: [], rate: 0.9, voice: '' };
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function markDay() { const d = today(); if (!S.days.includes(d)) { S.days.push(d); save(); } }
+function streak() {
+  let n = 0, d = new Date();
+  if (!S.days.includes(today())) d = new Date(Date.now() - DAY);
+  while (S.days.includes(ymd(d))) { n++; d = new Date(d - DAY); }
+  return n;
+}
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const LV = ['A1', 'A2', 'B1'];
+function render(html) { $('#app').innerHTML = html; window.scrollTo(0, 0); const st = streak(); const el = $('#streak'); el.hidden = !st; el.textContent = '🔥 ' + st; }
+
+// ---------- голос (бесплатный, встроенный в телефон/браузер) ----------
+let VOICES = [];
+const GOOD = /samantha|karen|daniel|moira|serena|google us english|google uk english female|microsoft (aria|jenny|libby|sonia)|ava|allison|susan|tessa/i;
+const FUNNY = /albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|junior|ralph|fred|kathy|eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley/i;
+function loadVoices() {
+  const all = (speechSynthesis.getVoices() || []).filter(v => /^en(-|_)/i.test(v.lang) && !FUNNY.test(v.name));
+  VOICES = all.sort((a, b) => (GOOD.test(b.name) - GOOD.test(a.name)) || (/en.US/i.test(b.lang) - /en.US/i.test(a.lang)));
+}
+if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+function say(text, rate) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text.replace(/[«»"]/g, ''));
+  const v = VOICES.find(x => x.name === S.voice) || VOICES[0];
+  if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'en-US';
+  u.rate = rate || S.rate;
+  speechSynthesis.speak(u);
+}
+
+// ---------- карточки слов: интервальное повторение ----------
+const STEPS = [0, 1, 3, 7, 16, 35, 90];       // дни до следующего показа
+function addCard(en, ru, lesson) { if (!S.cards[en]) S.cards[en] = { ru, lesson, box: 0, due: today() }; }
+function due() { const t = today(); return Object.entries(S.cards).filter(([, c]) => c.due <= t); }
+function grade(en, ok, hard) {
+  const c = S.cards[en];
+  c.box = ok ? Math.min(STEPS.length - 1, c.box + (hard ? 0 : 1)) : 0;
+  const days = ok ? Math.max(1, STEPS[c.box]) : 0;
+  c.due = ymd(new Date(Date.now() + days * DAY));
+  save();
+}
+const learned = () => Object.values(S.cards).filter(c => c.box >= 3).length;
+
+// ---------- экраны ----------
+const byId = id => LESSONS.find(l => l.id === id);
+const monthOf = id => MONTHS.find(m => m.ids.includes(id));
+function nextLesson() {
+  const from = ORDER.indexOf(MONTHS[(S.start || 1) - 1].ids[0]);
+  const id = ORDER.slice(from).find(i => !S.done[i]) || ORDER.find(i => !S.done[i]);
+  return id ? byId(id) : null;
+}
+function home() {
+  if (!S.level) return welcome();
+  const next = nextLesson(), cur = next ? monthOf(next.id) : MONTHS[5];
+  const d = due().length, doneN = Object.keys(S.done).length;
+  const mDone = m => m.ids.filter(i => S.done[i]).length;
+  const row = id => { const l = byId(id); return `<div class="lesson ${next && next.id === id ? 'next' : ''}" onclick="lesson('${id}')"><span class="lv">${l.level}</span><span class="t">${esc(l.title)}<small>${esc(l.ru)}</small></span>${S.done[id] ? '<span class="done">✓</span>' : ''}</div>`; };
+  render(`
+    <h1>${S.name ? esc(S.name) + ', п' : 'П'}ривет! 👋</h1>
+    <div class="stats"><div><b>${streak()}</b><span>дней подряд</span></div><div><b>${Object.keys(S.cards).length}</b><span>слов в словаре</span></div><div><b>${doneN}</b><span>из ${ORDER.length} уроков</span></div></div>
+    <div class="card">
+      <p class="muted">План на сегодня · ~${S.minutes} мин</p>
+      ${d ? `<p>🔁 Повторить слова: <b>${d}</b></p>` : `<p>🔁 Повторять пока нечего — отлично!</p>`}
+      ${next ? `<p>📖 Урок ${ORDER.indexOf(next.id) + 1}: <b>${esc(next.title)}</b> <span class="muted">· ${esc(next.ru)}</span></p>` : `<p>🎉 Весь курс пройден!</p>`}
+      ${d ? `<button class="btn" onclick="review()">Повторить слова (${d})</button>` : ''}
+      ${next ? `<button class="btn ${d ? 'light' : ''}" onclick="lesson('${next.id}')">${d ? 'Потом новый урок' : 'Начать урок'}</button>` : ''}
+    </div>
+    <h2>Месяц ${cur.n}: ${esc(cur.title)}</h2>
+    <p class="muted" style="font-size:15px">${esc(cur.goal)} Пройдено ${mDone(cur)} из 20.</p>
+    <div class="bar"><i style="width:${mDone(cur) / 20 * 100}%"></i></div>
+    <h2>Программа на 6 месяцев</h2>
+    ${MONTHS.map(m => `<details class="month ${m === cur ? 'cur' : ''}" ${m === cur ? 'open' : ''}><summary><span class="mn">${m.n}</span><span class="t">${esc(m.title)}<small>${m.level} · ${esc(m.goal)}</small></span><span class="cnt">${mDone(m)}/20</span></summary>
+      ${m.weeks.map((w, k) => `<div class="week"><h3>Неделя ${k + 1}</h3>${w.map(row).join('')}</div>`).join('')}</details>`).join('')}
+    ${LIB_LINK ? `<a class="btn light" style="text-align:center;text-decoration:none" href="library.html">📚 Библиотека: книги на английском</a>` : ''}
+    <button class="btn ghost" onclick="settings()">Настройки и голос</button>
+    <p class="muted center" style="margin-top:14px;font-size:14px">5 уроков в неделю, 20 в месяц. Прогресс хранится в этом браузере.</p>`);
+}
+
+function welcome() {
+  render(`<h1>Английский по 15 минут в день</h1>
+    <p>Короткие истории с переводом по нажатию, озвучка, упражнения и повторение слов, чтобы они не забывались.</p>
+    <div class="card"><label class="set">Как тебя зовут?<input id="nm" style="flex:1;max-width:200px;padding:10px;border:2px solid var(--line);border-radius:12px" placeholder="Имя"></label>
+    <label class="set">Сколько минут в день?<select id="mn" style="padding:10px;border-radius:12px;border:2px solid var(--line)"><option>10</option><option selected>15</option><option>20</option><option>30</option></select></label></div>
+    <button class="btn" onclick="S.name=$('#nm').value.trim();S.minutes=+$('#mn').value;save();test(0,0)">Узнать мой уровень (2 мин)</button>
+    <button class="btn ghost" onclick="S.level='A1';S.start=1;save();home()">Начать с самого простого</button>`);
+}
+
+function test(i, score) {
+  if (i >= PLACEMENT.length) {
+    S.level = score <= 4 ? 'A1' : score <= 8 ? 'A2' : 'B1'; S.start = { A1: 1, A2: 3, B1: 5 }[S.level]; save();
+    return render(`<div class="center"><div class="big">🎯</div><h1>Твой уровень: ${S.level}</h1>
+      <p class="muted">Правильных ответов: ${score} из ${PLACEMENT.length}. Начнём с месяца ${S.start}; это можно поменять в настройках.</p></div>
+      <button class="btn" onclick="home()">К урокам</button>`);
+  }
+  const q = PLACEMENT[i];
+  render(`<div class="steps">${PLACEMENT.map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('')}</div>
+    <p class="muted">Вопрос ${i + 1} из ${PLACEMENT.length}</p><h1>${esc(q.q)}</h1>
+    ${q.o.map((o, k) => `<button class="opt" data-ok="${k === q.a ? 1 : 0}" onclick="pick(this,${k === q.a},()=>test(${i + 1},${score}+(${k === q.a}?1:0)))">${esc(o)}</button>`).join('')}
+    <button class="btn ghost" onclick="test(${i + 1},${score})">Не знаю</button>`);
+}
+function pick(btn, ok, next) {
+  document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+  btn.classList.add(ok ? 'ok' : 'bad');
+  if (!ok) document.querySelectorAll('.opt').forEach(b => { if (b.dataset.ok === '1') b.classList.add('ok'); });
+  setTimeout(next, ok ? 450 : 1100);
+}
+
+// ---------- урок: чтение → слова → упражнения → итог ----------
+let L = null, EX = [], EI = 0, ER = 0;
+function lesson(id) {
+  L = LESSONS.find(l => l.id === id);
+    const html = L.s.map(([en, ru], si) => {
+    const words = en.split(/(\s+)/).map(tok => {
+      if (/^\s+$/.test(tok)) return tok;
+      const bare = tok.replace(/[^A-Za-z']/g, '').toLowerCase();
+      const isKey = L.w.some(([en]) => wmatch(bare, en));
+      return `<span class="w ${isKey ? 'key' : ''}" data-s="${si}" data-w="${esc(bare)}">${esc(tok)}</span>`;
+    }).join('');
+    return `<p class="sent">${words} <button class="say" onclick="say(L.s[${si}][0])">▶</button><span class="tr" hidden>${esc(ru)}</span></p>`;
+  }).join('');
+  render(`<div class="steps"><i class="on"></i><i></i><i></i><i></i></div>
+    <p class="muted">Урок ${ORDER.indexOf(L.id) + 1} из ${ORDER.length} · шаг 1 из 4 · читаем · ${L.level}</p><h1>${esc(L.title)} <span class="muted" style="font-size:18px">· ${esc(L.ru)}</span></h1>
+    <p class="muted" style="font-size:15px">Нажми на слово — увидишь перевод. ▶ — послушать фразу. Подчёркнутые слова будут в упражнениях.</p>
+    <div class="card text" id="txt">${html}</div>
+    <div class="row"><button class="btn light" onclick="say(L.s.map(x=>x[0]).join(' '))">▶ Весь текст</button><button class="btn light" onclick="document.querySelectorAll('.tr').forEach(t=>t.hidden=!t.hidden)">Перевод</button></div>
+    <button class="btn" onclick="words()">Дальше: новые слова</button>
+    <button class="btn ghost" onclick="home()">Назад</button>`);
+  $('#txt').addEventListener('click', e => {
+    const w = e.target.closest('.w'); if (!w) return;
+    document.querySelectorAll('.w.on').forEach(x => x.classList.remove('on')); w.classList.add('on');
+    const bare = w.dataset.w, s = L.s[+w.dataset.s];
+    const k = L.w.find(([en]) => wmatch(bare, en));
+    say(k ? k[0].split(' / ')[0] : bare, 0.85);
+    popup(k ? `<b>${esc(k[0])}</b> — ${esc(k[1])}<small>во фразе: ${esc(s[1])}</small>` : `<b>${esc(w.textContent.replace(/[^A-Za-z' -]/g, ''))}</b><small>фраза целиком: ${esc(s[1])}</small>`);
+  });
+}
+let popT;
+function popup(html) { let p = $('.pop'); if (!p) { p = document.createElement('div'); p.className = 'pop'; document.body.appendChild(p); p.onclick = () => p.remove(); } p.innerHTML = html; clearTimeout(popT); popT = setTimeout(() => p.remove(), 5000); }
+
+function words() {
+  document.querySelector('.pop')?.remove();
+  render(`<div class="steps"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+    <p class="muted">Шаг 2 из 4 · слова урока</p><h1>8 новых слов</h1>
+    ${L.g ? `<div class="rule"><b>Правило урока</b>${esc(L.g)}</div>` : ''}
+    <div class="card">${L.w.map(([en, ru], k) => `<div class="lesson" onclick="say(L.w[${k}][0].split(' / ')[0],0.85)"><span class="t"><b>${esc(en)}</b><small>${esc(ru)}</small></span><span class="say">▶</span></div>`).join('')}</div>
+    <p class="muted" style="font-size:15px">Нажми на слово, чтобы послушать. Слова попадут в твой словарь и будут возвращаться на повторение.</p>
+    <button class="btn" onclick="startEx()">Дальше: упражнения</button>`);
+}
+
+function startEx() {
+  L.w.forEach(([en, ru]) => addCard(en, ru, L.id)); save();
+  const pool = LESSONS.flatMap(l => l.w);
+  const wrong = (right, key) => { const seen = new Set([right[key]]); return shuffle(pool).filter(p => !seen.has(p[key]) && seen.add(p[key])).slice(0, 2); };
+  const ex = [];
+  shuffle(L.w).slice(0, 3).forEach(w => ex.push({ type: 'en2ru', w, opts: shuffle([w, ...wrong(w, 1)]) }));
+  shuffle(L.w).slice(0, 3).forEach(w => ex.push({ type: 'ru2en', w, opts: shuffle([w, ...wrong(w, 0)]) }));
+  const short = L.s.filter(s => s[0].split(' ').length <= 9);
+  shuffle(short).slice(0, 2).forEach(s => ex.push({ type: 'build', s }));
+  shuffle(L.s).slice(0, 2).forEach(s => ex.push({ type: 'listen', s, opts: shuffle([s, ...shuffle(L.s.filter(x => x !== s)).slice(0, 2)]) }));
+  EX = shuffle(ex); EI = 0; ER = 0; showEx();
+}
+function showEx() {
+  if (EI >= EX.length) return finish();
+  const e = EX[EI], head = `<div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div><p class="muted">Шаг 3 из 4 · упражнение ${EI + 1} из ${EX.length}</p>`;
+  const next = ok => `()=>{ER+=${ok ? 1 : 0};EI++;showEx()}`;
+  if (e.type === 'en2ru' || e.type === 'ru2en') {
+    const q = e.type === 'en2ru' ? e.w[0] : e.w[1], key = e.type === 'en2ru' ? 1 : 0;
+    render(head + `<h1>${e.type === 'en2ru' ? 'Что значит' : 'Как по-английски'}: «${esc(q)}»?</h1>
+      ${e.type === 'en2ru' ? `<button class="say" style="margin:0 0 6px" onclick="say('${esc(e.w[0].split(' / ')[0]).replace(/'/g, "\\'")}',0.85)">▶ послушать</button>` : ''}
+      ${e.opts.map(o => { const ok = o === e.w; return `<button class="opt" data-ok="${ok ? 1 : 0}" onclick="pick(this,${ok},${next(ok)})">${esc(o[key])}</button>`; }).join('')}`);
+    if (e.type === 'en2ru') say(e.w[0].split(' / ')[0], 0.85);
+  } else if (e.type === 'listen') {
+    render(head + `<h1>Послушай и выбери фразу</h1><button class="btn light" onclick="say(EX[EI].s[0])">▶ Послушать ещё раз</button>
+      ${e.opts.map(o => { const ok = o === e.s; return `<button class="opt" data-ok="${ok ? 1 : 0}" onclick="pick(this,${ok},${next(ok)})">${esc(o[0])}</button>`; }).join('')}`);
+    say(e.s[0]);
+  } else {
+    const parts = e.s[0].replace(/[«»"“”]/g, '').replace(/[.!?]$/, '').split(' ');
+    const norm = a => a.map(t => t.replace(/[^A-Za-z']/g, '').toLowerCase()).join(' ');
+    e.left = shuffle(parts.map((t, i) => ({ t, i }))); e.got = [];
+    const draw = () => render(head + `<h1>Собери фразу</h1><p class="muted">${esc(e.s[1])}</p>
+      <div class="chips">${e.got.map((c, k) => `<span class="chip" onclick="EX[EI].left.push(EX[EI].got.splice(${k},1)[0]);EX[EI].draw()">${esc(c.t)}</span>`).join('')}</div>
+      <div class="chips" style="border-style:solid">${e.left.map((c, k) => `<span class="chip" onclick="EX[EI].got.push(EX[EI].left.splice(${k},1)[0]);EX[EI].draw()">${esc(c.t)}</span>`).join('')}</div>
+      <button class="btn" ${e.left.length ? 'disabled' : ''} onclick="EX[EI].check()">Проверить</button>`);
+    e.draw = draw;
+    e.check = () => {
+      const ok = norm(e.got.map(c => c.t)) === norm(parts);
+      say(e.s[0]);
+      render(head + `<div class="card center"><div class="big">${ok ? '✅' : '🙂'}</div><p class="text" style="font-size:19px">${esc(e.s[0])}</p><p class="muted">${esc(e.s[1])}</p></div>
+        <button class="btn" onclick="ER+=${ok ? 1 : 0};EI++;showEx()">Дальше</button>`);
+    };
+    draw();
+  }
+}
+function finish() {
+  const first = !S.done[L.id];
+  S.done[L.id] = { score: ER, of: EX.length, at: today() }; markDay();
+  const m = monthOf(L.id), monthDone = first && m.ids.every(i => S.done[i]);
+  if (monthDone && m.n < 6) S.start = m.n + 1;
+  save();
+  render(`<div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    <div class="center"><div class="big">${monthDone ? '🏆' : ER >= EX.length - 2 ? '🎉' : '👍'}</div><h1>${monthDone ? `Месяц ${m.n} пройден!` : 'Урок пройден!'}</h1>
+    <p>Правильно: <b>${ER} из ${EX.length}</b></p>
+    <p class="muted">${first ? '+8 слов в словаре. ' : ''}Дней подряд: ${streak()} 🔥</p>
+    ${monthDone && m.n < 6 ? `<p><b>Дальше: месяц ${m.n + 1} · ${esc(MONTHS[m.n].title)}</b></p>` : ''}</div>
+    <button class="btn" onclick="home()">На главную</button>`);
+}
+
+// ---------- повторение слов ----------
+let R = [], RI = 0;
+function review() { R = shuffle(due()).slice(0, 20); RI = 0; card(false); }
+function card(open) {
+  if (RI >= R.length) { markDay(); return render(`<div class="center"><div class="big">💪</div><h1>Повторение готово!</h1><p class="muted">Слова вернутся, когда начнут забываться.</p></div><button class="btn" onclick="home()">На главную</button>`); }
+  const [en, c] = R[RI];
+  render(`<p class="muted">Повторение · ${RI + 1} из ${R.length}</p>
+    <div class="card"><div class="flash">${esc(en)}</div><div class="flash-ru">${open ? esc(c.ru) : ''}</div>
+    <button class="say" style="display:block;margin:8px auto 0" onclick="say('${esc(en.split(' / ')[0]).replace(/'/g, "\\'")}',0.85)">▶ послушать</button></div>
+    ${open ? `<div class="row"><button class="btn" style="background:var(--red)" onclick="grade(R[RI][0],false);RI++;card(false)">Не помню</button>
+      <button class="btn" style="background:var(--amber)" onclick="grade(R[RI][0],true,true);RI++;card(false)">Трудно</button>
+      <button class="btn" onclick="grade(R[RI][0],true);RI++;card(false)">Помню</button></div>`
+      : `<button class="btn" onclick="card(true)">Показать перевод</button>`}`);
+  if (!open) say(en.split(' / ')[0], 0.85);
+}
+
+// ---------- настройки ----------
+function settings() {
+  render(`<h1>Настройки</h1>
+    <div class="card">
+      <label class="set">Начать с месяца<select id="lv">${MONTHS.map(m => `<option value="${m.n}" ${m.n === (S.start || 1) ? 'selected' : ''}>${m.n} · ${m.level}</option>`).join('')}</select></label>
+      <label class="set">Минут в день<select id="mn">${[10, 15, 20, 30].map(m => `<option ${m === S.minutes ? 'selected' : ''}>${m}</option>`).join('')}</select></label>
+      <label class="set">Голос<select id="vc" style="max-width:60%">${VOICES.length ? VOICES.map(v => `<option ${v.name === S.voice ? 'selected' : ''} value="${esc(v.name)}">${esc(v.name)} (${v.lang})</option>`).join('') : '<option>голоса не найдены</option>'}</select></label>
+      <label class="set">Скорость речи<input type="range" id="rt" min="0.6" max="1.1" step="0.05" value="${S.rate}"></label>
+      <button class="btn light" onclick="S.voice=$('#vc').value;S.rate=+$('#rt').value;say('Hello! This is my voice. How are you today?')">▶ Проверить голос</button>
+    </div>
+    <button class="btn" onclick="S.start=+$('#lv').value;S.level=MONTHS[S.start-1].level;S.minutes=+$('#mn').value;S.voice=$('#vc').value;S.rate=+$('#rt').value;save();home()">Сохранить</button>
+    <button class="btn ghost" onclick="test(0,0)">Пройти тест уровня заново</button>
+    <p class="muted" style="margin-top:18px;font-size:14px">Совет: на iPhone самые приятные голоса — Samantha и Karen. Их можно скачать: Настройки → Универсальный доступ → Устный контент → Голоса → English.</p>`);
+}
+home();
+</script>
+</body>
+</html>
