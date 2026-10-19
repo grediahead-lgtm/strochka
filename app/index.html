@@ -328,6 +328,13 @@ function card(open) {
 }
 
 // ---------- настройки ----------
+function unlock() {
+  const c = ($('#code').value || '').trim().toLowerCase();
+  if (['книги', 'lib', 'books'].includes(c)) {
+    try { localStorage.setItem('strochka-lib-on', '1'); } catch (e) {}
+    LIB_LINK = true; $('#codeMsg').textContent = 'Готово: кнопка «Библиотека» теперь на главной.';
+  } else $('#codeMsg').textContent = 'Код не подошёл.';
+}
 function settings() {
   render(`<h1>Настройки</h1>
     <div class="card">
@@ -339,6 +346,8 @@ function settings() {
     </div>
     <button class="btn" onclick="S.start=+$('#lv').value;S.level=MONTHS[S.start-1].level;S.minutes=+$('#mn').value;S.voice=$('#vc').value;S.rate=+$('#rt').value;save();home()">Сохранить</button>
     <button class="btn ghost" onclick="test(0,0)">Пройти тест уровня заново</button>
+    <div class="card" style="margin-top:14px"><label class="set">Код доступа<input id="code" autocomplete="off" autocapitalize="off" style="flex:1;max-width:180px;padding:10px;border:2px solid var(--line);border-radius:12px" placeholder="если есть"></label>
+      <button class="btn light" onclick="unlock()">Применить код</button><p class="muted" id="codeMsg" style="margin:8px 0 0;font-size:14px"></p></div>
     <p class="muted" style="margin-top:18px;font-size:14px">Совет: на iPhone самые приятные голоса — Samantha и Karen. Их можно скачать: Настройки → Универсальный доступ → Устный контент → Голоса → English.</p>`);
 }
 home();
