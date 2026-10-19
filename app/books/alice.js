@@ -129,7 +129,9 @@ const DICT = {
  "bit":"кусочек","anxiously":"с тревогой","holding":"держа","top":"верх, макушка","surprised":"удивлённый","remained":"осталась (remain)","same":"тот же","expecting":"ожидая","dull":"скучный","common":"обычный","set to work":"принялась за дело"
 };
 
-window.BOOKS.push({ id: "alice", title: "Alice's Adventures in Wonderland", ru: "Алиса в стране чудес", author: "Lewis Carroll, 1865", level: "B1–B2", per: 3,
+(window.ALICE_ADD || []).forEach(c => { chapter(c.title, c.p); Object.assign(DICT, c.dict || {}); });
+
+window.BOOKS.push({ id: "alice", title: "Alice's Adventures in Wonderland", ru: "Алиса в стране чудес", author: "Lewis Carroll, 1865", level: "B1–B2", per: 3, icon: "🎩",
   p: P, dict: DICT, more: `Переведено глав: ${CH.length} из 12. Следующая глава скоро появится.`,
   chap: i => { let t = CH[0][1]; CH.forEach(([s, n]) => { if (i >= s) t = n; }); return t; } });
 })();

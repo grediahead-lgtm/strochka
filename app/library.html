@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Строчка · Библиотека</title>
 <meta name="theme-color" content="#fbf7f0">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Строчка">
 <style>
 :root{--ink:#1d2433;--muted:#667085;--bg:#fbf7f0;--card:#fff;--line:#ece4d6;--green:#1f7a5c;--green-soft:#e6f4ee;--amber:#b7791f;--amber-soft:#fdf3e1}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -46,6 +51,8 @@ h1{font-size:26px;line-height:1.2;margin:6px 0 10px;letter-spacing:-.02em;text-w
 <script src="wmatch.js"></script>
 <script src="books/common.js"></script>
 <script src="books/peter.js"></script>
+<script src="books/benjamin.js"></script>
+<script src="books/alice-2.js"></script>
 <script src="books/alice.js"></script>
 <script>
 const KEY = 'strochka-app-v1', LKEY = 'strochka-lib-v1', PER = 6;   // абзацев на странице
@@ -65,7 +72,7 @@ function say(t, rate) { if (!('speechSynthesis' in window)) return; speechSynthe
 
 // словарь: ищем фразу или слово в разных формах
 function lookup(book, words, i) {
-  const d = book.all || (book.all = { ...window.COMMON, ...(book.dict || {}) });
+  const d = book.all || (book.all = Object.assign({}, window.COMMON, ...window.BOOKS.filter(b => b !== book).map(b => b.dict || {}), book.dict || {}));
   for (const n of [4, 3, 2]) { const ph = words.slice(i, i + n).join(' '); if (n > 1 && d[ph]) return [ph, d[ph]]; for (let k = 1; k < n; k++) { const ph2 = words.slice(i - k, i - k + n).join(' '); if (i - k >= 0 && d[ph2]) return [ph2, d[ph2]]; } }
   const w = words[i]; if (d[w]) return [w, d[w]];
   for (const k in d) if (!k.includes(' ') && wmatch(w, k)) return [k, d[k]];
@@ -84,8 +91,8 @@ function addCard(en, ru, src) {
 function shelf() {
   $('#nav').hidden = true; closePop();
   $('#app').innerHTML = `<h1>Книги на английском</h1>
-    <p class="muted">Нажми на слово — перевод и озвучка. Нажми на ▸ у фразы — перевод всей фразы. Слова можно добавлять в свой словарь, они появятся в повторении.</p>
-    ${BOOKSL.map((b, k) => { const pos = LIB.pos[b.id] || 0; return `<div class="book" onclick="openBook(${k})"><div class="cv">${b.id === 'peter' ? '🐰' : '🎩'}</div><div class="t"><b>${esc(b.title)}</b><small>${esc(b.ru)} · ${esc(b.author)} · ${b.level}</small>
+    <p class="muted">Нажми на любое слово — увидишь перевод слова и всей фразы и услышишь озвучку. Слова можно добавлять в свой словарь, они появятся в повторении на главной. Закладка сохраняется сама.</p>
+    ${BOOKSL.map((b, k) => { const pos = LIB.pos[b.id] || 0; return `<div class="book" onclick="openBook(${k})"><div class="cv">${b.icon || '📖'}</div><div class="t"><b>${esc(b.title)}</b><small>${esc(b.ru)} · ${esc(b.author)} · ${b.level}</small>
       <small>${pos ? `Страница ${pos + 1} из ${b.pages}` : `${b.pages} стр.`}${b.more ? ' · ' + esc(b.more) : ''}</small><div class="bar"><i style="width:${(pos + 1) / b.pages * 100}%"></i></div></div></div>`; }).join('')}`;
   window.scrollTo(0, 0);
 }

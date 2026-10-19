@@ -1,6 +1,6 @@
 // The Tale of Peter Rabbit — Beatrix Potter, 1902 (общественное достояние, текст Project Gutenberg #14838). Перевод — наш.
 window.BOOKS = window.BOOKS || [];
-window.BOOKS.push({ id: "peter", title: "The Tale of Peter Rabbit", ru: "Сказка о кролике Питере", author: "Beatrix Potter, 1902", level: "A1–A2",
+window.BOOKS.push({ id: "peter", title: "The Tale of Peter Rabbit", ru: "Сказка о кролике Питере", author: "Beatrix Potter, 1902", level: "A1–A2", icon: "🐰",
 p: [
  [["Once upon a time there were four little Rabbits, and their names were — Flopsy, Mopsy, Cotton-tail, and Peter.", "Жили-были четыре маленьких крольчонка, и звали их Флопси, Мопси, Ватный Хвостик и Питер."],
   ["They lived with their Mother in a sand-bank, underneath the root of a very big fir-tree.", "Они жили с мамой в песчаном пригорке, под корнем очень большой ели."]],

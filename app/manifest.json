@@ -1,0 +1,13 @@
+{
+  "name": "Строчка — английский каждый день",
+  "short_name": "Строчка",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fbf7f0",
+  "theme_color": "#1f7a5c",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
