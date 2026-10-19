@@ -61,6 +61,8 @@ h1{font-size:26px;line-height:1.2;margin:6px 0 10px;letter-spacing:-.02em;text-w
 <script src="books/alice-8.js"></script>
 <script src="books/alice-9.js"></script>
 <script src="books/alice-10.js"></script>
+<script src="books/alice-11.js"></script>
+<script src="books/alice-12.js"></script>
 <script src="books/alice.js"></script>
 <script>
 const KEY = 'strochka-app-v1', LKEY = 'strochka-lib-v1', PER = 6;   // абзацев на странице
@@ -70,7 +72,14 @@ const today = () => { const d = new Date(); return d.getFullYear() + '-' + Strin
 let LIB = {}; try { LIB = JSON.parse(localStorage.getItem(LKEY)) || {}; } catch (e) {}
 LIB.pos = LIB.pos || {}; LIB.showTr = !!LIB.showTr;
 const saveLib = () => { try { localStorage.setItem(LKEY, JSON.stringify(LIB)); } catch (e) {} };
-const BOOKSL = window.BOOKS.map(b => ({ ...b, per: b.per || PER, pages: Math.ceil(b.p.length / (b.per || PER)) }));
+// страницы: по per абзацев, каждая глава с новой страницы
+const BOOKSL = window.BOOKS.map(b => {
+  const per = b.per || PER, starts = (b.chapters || []).map(c => c[0]).concat(b.p.length), idx = [];
+  let from = 0;
+  for (const end of starts.length > 1 ? starts.slice(1) : [b.p.length]) { for (let i = from; i < end; i += per) idx.push(i); from = end; }
+  return { ...b, per, idx, pages: idx.length };
+});
+const pageOf = (b, para) => { let k = 0; b.idx.forEach((s, j) => { if (s <= para) k = j; }); return k; };
 
 // голос
 let VOICE = null;
@@ -108,15 +117,15 @@ let B = null, P = 0;
 function openBook(k) { B = BOOKSL[k]; P = Math.min(LIB.pos[B.id] || 0, B.pages - 1); page(); }
 function page() {
   closePop(); LIB.pos[B.id] = P; saveLib();
-  const ps = B.p.slice(P * B.per, P * B.per + B.per);
+  const p0 = B.idx[P], p1 = Math.min(B.idx[P + 1] ?? B.p.length, p0 + B.per), ps = B.p.slice(p0, p1);
   let si = 0;
   const html = ps.map((para, pi) => `<p>${para.map(([en, ru], k) => {
-    const id = (P * B.per + pi) + '-' + k;
+    const id = (p0 + pi) + '-' + k;
     const toks = en.split(/(\s+|—)/).map(t => /^\s+$|^—$/.test(t) || !/[A-Za-z]/.test(t) ? esc(t) : `<span class="w">${esc(t)}</span>`).join('');
     return `<span class="s" data-id="${id}" data-en="${esc(en)}" data-ru="${esc(ru)}">${toks}</span> <span class="tr" ${LIB.showTr ? '' : 'hidden'}>${esc(ru)}</span>`;
   }).join(' ')}</p>`).join('');
-  $('#app').innerHTML = `<p class="muted" style="margin:0 0 6px;font-size:14px">${esc(B.title)}${B.chap ? ' · ' + esc(B.chap(P * B.per)) : ''}</p>
-    <div class="tools"><button onclick="shelf()">📚 Все книги</button><button class="${LIB.showTr ? 'on' : ''}" onclick="LIB.showTr=!LIB.showTr;saveLib();page()">Перевод под фразами</button><button onclick="say([...document.querySelectorAll('.s')].map(s=>s.dataset.en).join(' '))">▶ Читать вслух</button></div>
+  $('#app').innerHTML = `<p class="muted" style="margin:0 0 6px;font-size:14px">${esc(B.title)}${B.chap ? ' · ' + esc(B.chap(p0)) : ''}</p>
+    <div class="tools"><button onclick="shelf()">📚 Все книги</button><button class="${LIB.showTr ? 'on' : ''}" onclick="LIB.showTr=!LIB.showTr;saveLib();page()">Перевод под фразами</button><button onclick="say([...document.querySelectorAll('.s')].map(s=>s.dataset.en).join(' '))">▶ Читать вслух</button>${B.chapters ? `<select onchange="if(this.value!==''){P=pageOf(B,+this.value);page()}" style="border:1px solid var(--line);border-radius:999px;padding:7px 10px;font:600 14px system-ui,sans-serif;background:#fff;max-width:100%"><option value="">Главы…</option>${B.chapters.map(([i, n]) => `<option value="${i}">${esc(n)}</option>`).join('')}</select>` : ''}</div>
     <div class="page" id="pageEl">${html}</div>
     ${P === B.pages - 1 ? `<p class="muted" style="margin-top:14px;text-align:center">${B.more ? esc(B.more) : 'Книга закончилась. Браво! 🎉'}</p>` : ''}`;
   $('#nav').hidden = false; $('#pg').textContent = `${P + 1} / ${B.pages}`;
